@@ -4,9 +4,11 @@ Answer each question in 3 to 5 sentences. Be specific and honest about what actu
 
 ## 1. What was broken when you started?
 
-- What did the game look like the first time you ran it?
-- List at least two concrete bugs you noticed at the start  
-  (for example: "the hints were backwards").
+When I first ran the game it looked normal — a title, a difficulty picker, and a box to type my guess. But once I started playing, the hints made no sense. For every input it says "Go Lower," so there has to be some problem. The range is between 1 to 100, but even when entering 1 it shows "Go Lower," so there is some glitch with the number — it's not taking the number or not recognizing it properly. I also noticed my score jumped up and down randomly when I guessed wrong, and the game always said "between 1 and 100" even after I switched to Easy mode (which should be 1 to 20).
+
+Two concrete bugs I noticed right away:
+- The hints were wrong/backwards — the direction it told me to go didn't match my guess.
+- The score didn't behave consistently — sometimes a wrong guess lost points, sometimes it gained points.
 
 **Bug Reproduction Log**
 
@@ -14,9 +16,9 @@ Document at least 3 bugs you found. Add rows as needed.
 
 | Input | Expected Behavior | Actual Behavior | Console Output / Error |
 |-------|-------------------|-----------------|------------------------|
-| | | | |
-| | | | |
-| | | | |
+| Guessed 90 when the secret was 50 | Hint should say "Too High" / go lower | It told me to "Go Lower" (wrong direction) | none |
+| Made several wrong guesses in a row | Score should change consistently | Score bounced up and down (sometimes +5, sometimes -5 for being wrong) | none |
+| Switched difficulty to Easy and read the instructions | Should say "Guess a number between 1 and 20" | Still said "between 1 and 100" | none |
 
 ---
 
