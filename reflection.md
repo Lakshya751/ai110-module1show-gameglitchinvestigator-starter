@@ -4,11 +4,11 @@ Answer each question in 3 to 5 sentences. Be specific and honest about what actu
 
 ## 1. What was broken when you started?
 
-When I first ran the game it looked normal — a title, a difficulty picker, and a box to type my guess. But once I started playing, the hints made no sense. For every input it says "Go Lower," so there has to be some problem. The range is between 1 to 100, but even when entering 1 it shows "Go Lower," so there is some glitch with the number — it's not taking the number or not recognizing it properly. I also noticed my score jumped up and down randomly when I guessed wrong, and the game always said "between 1 and 100" even after I switched to Easy mode (which should be 1 to 20).
+When I first ran the game, it looked normal at first. There was a title, a difficulty picker, and a place to type in my guess, so nothing seemed obviously wrong right away. But once I actually started playing, the hints didn’t make sense. No matter what number I entered, the game kept telling me to “Go Lower,” even when I guessed 1, which should not happen in a 1 to 100 range. I also noticed that the score was acting weird because sometimes a wrong guess made me lose points, but other times it added points, and the game still said “between 1 and 100” even after I switched to Easy mode.
 
 Two concrete bugs I noticed right away:
-- The hints were wrong/backwards — the direction it told me to go didn't match my guess.
-- The score didn't behave consistently — sometimes a wrong guess lost points, sometimes it gained points.
+- The hints were wrong or backwards, because the direction it gave me didn’t match my guess.
+- The score was not consistent, because a wrong guess could either lose points or gain points.
 
 **Bug Reproduction Log**
 
@@ -24,24 +24,24 @@ Document at least 3 bugs you found. Add rows as needed.
 
 ## 2. How did you use AI as a teammate?
 
-I used an AI coding assistant inside VS Code to help me understand the code and walk through the fixes. The most helpful thing it got right was spotting that the secret number was being turned into text (`str(...)`) on every other turn, which is why comparing my guess to the secret kept breaking and the hints were always off. I checked this myself by removing that line and playing again with the Developer Debug Info open, and the hints finally matched my guesses, so I knew it was right.
+I used an AI coding assistant inside VS Code to help me understand what was going wrong in the code and to talk through the fixes. The most helpful thing it noticed was that the secret number was being changed into text using str(...) on every other turn. That explained why the comparison between my guess and the secret number was breaking and why the hints were acting strange. I didn’t just accept that answer right away, though. I removed that line, played the game again with the Developer Debug Info open, and then the hints finally matched the guesses, so I knew that part was actually fixed.
 
-One thing that was misleading at first: the project hints (and my early assumption) pointed me toward a "Streamlit state bug" where the secret number supposedly changed every time I clicked Submit. I spent a little time chasing that, but when I watched the Secret value in the Developer Debug Info box, it actually stayed the same between guesses — the real problem was the type conversion and the swapped high/low messages, not the secret resetting. So I learned not to take the first explanation at face value and to verify it against what the game actually did.
-
+One thing that confused me at first was that the project hints, and honestly my own first guess too, made it seem like the secret number was resetting every time I clicked Submit. I spent a little time looking into that, but when I watched the Secret value in the Developer Debug Info box, I saw that it was staying the same between guesses. So the real issue was not the secret number resetting. It was mostly the type conversion and the high/low messages being mixed up. That taught me that AI can point me in the right direction, but I still need to check the behavior myself instead of trusting the first explanation.
 ---
 
 ## 3. Debugging and testing your fixes
 
-I decided a bug was really fixed in two ways: by running `pytest` and by playing the game with the Developer Debug Info open so I could see the secret and confirm the hint matched. I didn't want to trust the code just because it looked correct. One test I wrote was `test_wrong_guess_is_consistent`, which checks that a "Too High" guess on attempt 2 and on attempt 3 both lose the same 5 points. Before my fix, one of those would have added points instead, so this test directly catches the old score bug — and running it showed all 6 tests passing. AI helped me design this test by suggesting I check the same outcome on both an even and an odd attempt number, which is exactly the case that used to behave differently.
+I decided a bug was fixed by doing two things: running pytest and also playing the game myself with the Developer Debug Info open. I wanted to actually see that the secret number, the guess, and the hint all matched correctly instead of just assuming the code was fine. One test I wrote was test_wrong_guess_is_consistent, which checks that a “Too High” guess on attempt 2 and attempt 3 both lose the same 5 points. Before the fix, one of those attempts would add points instead, so this test directly caught the old score problem. AI helped me think of testing both an even and odd attempt number, which was useful because that was exactly where the score bug was happening.
+
 
 ---
 
 ## 4. What did you learn about Streamlit and state?
 
-Every time you click a button or type something, Streamlit re-runs the whole script from top to bottom, kind of like refreshing a web page. That means any normal variable gets wiped and created again from scratch on each click. `st.session_state` is like a backpack that survives the refresh — you put things like the secret number, the score, and the number of attempts inside it so they don't reset every time. So if you want something to be remembered between clicks, it has to live in session state instead of a regular variable.
+I learned that Streamlit re-runs the whole script every time you interact with the app, like when you click a button or enter something. It’s kind of like the page refreshes from the top each time. Because of that, regular variables don’t always keep their values the way I expected them to. st.session_state is what lets the app remember things between clicks, like the secret number, the score, and the number of attempts. So if something needs to stay saved while the user is playing, it should be stored in session state instead of only being kept as a normal variable.
 
 ---
 
 ## 5. Looking ahead: your developer habits
 
-One habit I want to keep is committing in small steps with clear messages and running the tests before each commit. It made it really easy to see what changed at each stage and I always knew the code still worked. One thing I'd do differently next time is write a quick test for a bug the moment I find it, before fixing it, so I can actually watch it go from failing to passing — this time I mostly fixed first and tested after. Overall this project changed how I think about AI-generated code: it can look clean and sound confident and still be quietly wrong, so I won't trust it until I've tested it and seen it work with my own eyes.
+One habit I want to keep is making small commits with clear messages and running tests before each commit. It made the project feel less messy because I could see exactly what changed at each step. Next time, I would like to write a test as soon as I find a bug, before I fix it, so I can actually see the test fail first and then pass after the fix. This project also changed how I think about AI-generated code. It can sound confident and look correct, but it can still be wrong, so I need to test it and confirm it myself before trusting it.
